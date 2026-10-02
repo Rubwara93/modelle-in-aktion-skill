@@ -1,0 +1,127 @@
+{
+ "_hinweis": "Beispiel für 5 Modelle (4 + 5×8 + 4,5 = 48,5 s). Je Modell ein 8-s-Abschnitt; Anzahl an die Modelle anpassen. Abschnitte 3000–120000 ms.",
+ "composition_plan": {
+  "positive_global_styles": [
+   "instrumental",
+   "tight warm funk-soul rhythm section recorded live, grown-up and energetic",
+   "120 BPM, 4/4, D major, steady tempo"
+  ],
+  "negative_global_styles": [
+   "folk stomp anthem",
+   "banjo",
+   "campfire acoustic strumming",
+   "gang vocals",
+   "hey shouts",
+   "game show",
+   "talk show band",
+   "ska",
+   "big band swing",
+   "high trumpet",
+   "glockenspiel",
+   "bells",
+   "celesta",
+   "music box",
+   "xylophone",
+   "ukulele",
+   "whistling",
+   "lute",
+   "harp",
+   "recorder",
+   "vocals"
+  ],
+  "sections": [
+   {
+    "section_name": "Intro",
+    "duration_ms": 4000,
+    "positive_local_styles": [
+     "two dry floor stomps and one handclap per bar, close-miked, wooden floor",
+     "low muted acoustic grand piano chords on quarter notes",
+     "round electric bass holding a low D",
+     "last beat: quick tight snare fill and a short brass pickup into the next downbeat"
+    ],
+    "negative_local_styles": [],
+    "lines": []
+   },
+   {
+    "section_name": "Groove (Modell, 8 s)",
+    "duration_ms": 8000,
+    "positive_local_styles": [
+     "groove lands on the downbeat with one short tight brass stab",
+     "dry tight live drum kit, kick on 1 and 3 with light syncopation, crisp snare backbeat with handclaps",
+     "round fingered electric bass funk line",
+     "clean muted funk guitar chops, sparse"
+    ],
+    "negative_local_styles": [],
+    "lines": []
+   },
+   {
+    "section_name": "Groove 2 (Modell, 8 s)",
+    "duration_ms": 8000,
+    "positive_local_styles": [
+     "same groove continues, one short brass stab on the downbeat",
+     "dry tight live drum kit, kick on 1 and 3 with light syncopation, crisp snare backbeat with handclaps",
+     "round fingered electric bass funk line",
+     "clean muted funk guitar chops, sparse"
+    ],
+    "negative_local_styles": [],
+    "lines": []
+   },
+   {
+    "section_name": "Lift (Modell, 8 s)",
+    "duration_ms": 8000,
+    "positive_local_styles": [
+     "energy step up on the downbeat with a brass stab",
+     "brass plays a short proud rising three-note phrase in the mid register",
+     "dry tight live drum kit, kick on 1 and 3 with light syncopation, crisp snare backbeat with handclaps",
+     "round fingered electric bass funk line",
+     "clean muted funk guitar chops, sparse"
+    ],
+    "negative_local_styles": [],
+    "lines": []
+   },
+   {
+    "section_name": "Together (Modell, 8 s)",
+    "duration_ms": 8000,
+    "positive_local_styles": [
+     "unison crew stomp on beat 1 of every bar",
+     "warm low legato strings sustaining underneath",
+     "brass holds back to a soft sustained swell",
+     "dry tight live drum kit, kick on 1 and 3 with light syncopation, crisp snare backbeat with handclaps",
+     "round fingered electric bass funk line",
+     "clean muted funk guitar chops, sparse"
+    ],
+    "negative_local_styles": [],
+    "lines": []
+   },
+   {
+    "section_name": "Peak (Modell, 8 s)",
+    "duration_ms": 8000,
+    "positive_local_styles": [
+     "full band on the downbeat",
+     "driving eighth-note acoustic grand piano",
+     "building floor toms across the last bar",
+     "bright, confident",
+     "dry tight live drum kit, kick on 1 and 3 with light syncopation, crisp snare backbeat with handclaps",
+     "round fingered electric bass funk line",
+     "clean muted funk guitar chops, sparse"
+    ],
+    "negative_local_styles": [],
+    "lines": []
+   },
+   {
+    "section_name": "Hit and ring-out (Outro)",
+    "duration_ms": 4500,
+    "positive_local_styles": [
+     "one big full-band hit exactly on the downbeat",
+     "everything stops after the hit",
+     "then only a single warm sustained D major acoustic grand piano chord ringing out",
+     "natural decay to silence"
+    ],
+    "negative_local_styles": [
+     "drums after the hit"
+    ],
+    "lines": []
+   }
+  ]
+ }
+}

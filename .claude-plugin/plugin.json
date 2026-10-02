@@ -1,0 +1,13 @@
+{
+  "name": "modelle-in-aktion",
+  "version": "0.1.0",
+  "description": "Stop-Motion-Filme aus Fotos von Workshop-Modellen: Das echte Foto wird lebendig, Figuren handeln passend zu dem, was die Gruppe gebaut hat. Mit Bauchbinden, Titel, Musik und Geräuschen.",
+  "author": {
+    "name": "Ruben Langwara",
+    "url": "https://www.rubenlangwara.de"
+  },
+  "repository": "https://github.com/Rubwara93/modelle-in-aktion-skill",
+  "license": "MIT",
+  "keywords": ["workshop", "stop-motion", "video", "nachbereitung", "modelle", "brickfilm", "werte"],
+  "skills": ["./skills/modelle-in-aktion"]
+}

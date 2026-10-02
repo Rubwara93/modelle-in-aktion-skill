@@ -1,0 +1,17 @@
+{
+  "name": "modelle-in-aktion",
+  "owner": {
+    "name": "Ruben Langwara",
+    "url": "https://www.rubenlangwara.de"
+  },
+  "description": "Skill von Ruben Langwara: Workshop-Modelle als Stop-Motion-Film nachbereiten.",
+  "plugins": [
+    {
+      "name": "modelle-in-aktion",
+      "source": "./",
+      "description": "Stop-Motion-Filme aus Fotos von Workshop-Modellen.",
+      "category": "productivity",
+      "keywords": ["workshop", "stop-motion", "video", "nachbereitung"]
+    }
+  ]
+}
