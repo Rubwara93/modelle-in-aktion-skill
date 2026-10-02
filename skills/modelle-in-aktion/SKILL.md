@@ -1,6 +1,6 @@
 ---
 name: modelle-in-aktion
-description: Macht aus Fotos von Workshop-Modellen (gebaut mit Bausteinen, z. B. in LEGO® SERIOUS PLAY®-Workshops) einen kurzen Stop-Motion-Film im Brickfilm-Stil – echtes Foto wird lebendig, Figuren hüpfen und handeln passend zu dem, was die Gruppe gebaut und erzählt hat, mit Bauchbinden, Titel, Musik und Geräuschen. Nutze diesen Skill immer, wenn jemand Workshop-Modelle, Wertemodelle, Teammodelle oder Bausteinmodelle als Video nachbereiten, animieren oder „in Aktion“ zeigen will, ein Recap-/Opener-Video aus Modellfotos braucht, „Stop-Motion aus den Modellen“ oder „Brickfilm“ sagt, oder Fotos von Grundplatten mit Minifiguren schickt und ein Video möchte – auch ohne das Wort Skill.
+description: Macht aus Fotos von Workshop-Modellen (gebaut in Workshops mit Klemmbausteinen) einen kurzen Stop-Motion-Film im Brickfilm-Stil – echtes Foto wird lebendig, Figuren hüpfen und handeln passend zu dem, was die Gruppe gebaut und erzählt hat, mit Bauchbinden, Titel, Musik und Geräuschen. Nutze diesen Skill immer, wenn jemand Workshop-Modelle, Wertemodelle, Teammodelle, Klemmbaustein- oder Bausteinmodelle als Video nachbereiten, animieren oder „in Aktion“ zeigen will, ein Recap-/Opener-Video aus Modellfotos braucht, „Stop-Motion aus den Modellen“ oder „Brickfilm“ sagt, oder Fotos von Grundplatten mit Minifiguren schickt und ein Video möchte – auch ohne das Wort Skill.
 ---
 
 # Modelle in Aktion

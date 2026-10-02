@@ -1,6 +1,6 @@
 # Modelle in Aktion
 
-Ein Skill für Claude Code, der aus Fotos von Workshop-Modellen einen kurzen Stop-Motion-Film macht. Gemeint sind Modelle aus Bausteinen, wie sie zum Beispiel in LEGO® SERIOUS PLAY®-Workshops entstehen. Grundlage bleibt das echte Foto, darin bewegen sich einzelne Figuren: Sie hüpfen, zeigen, steigen ein, ziehen gemeinsam an einem Strang. Jede Bewegung passt zu dem, was die Gruppe gebaut und erzählt hat. Dazu kommen Bauchbinden mit Namen und Claim je Modell, ein Titel, ein Schlussbild, Musik und Geräusche.
+Ein Skill für Claude Code, der aus Fotos von Workshop-Modellen einen kurzen Stop-Motion-Film macht. Gemeint sind Modelle, die Gruppen in Workshops mit Klemmbausteinen bauen. Grundlage bleibt das echte Foto, darin bewegen sich einzelne Figuren: Sie hüpfen, zeigen, steigen ein, ziehen gemeinsam an einem Strang. Jede Bewegung passt zu dem, was die Gruppe gebaut und erzählt hat. Dazu kommen Bauchbinden mit Namen und Claim je Modell, ein Titel, ein Schlussbild, Musik und Geräusche.
 
 Typischer Einsatz: Nachbereitung eines Werte- oder Strategie-Workshops. Das Video läuft zum Auftakt des nächsten Treffens, in der Endlosschleife auf einem Monitor oder als Beispiel auf LinkedIn.
 
@@ -16,7 +16,7 @@ Outro (4,5 s)      alle Modelle, ein Turm aus allen Steinen wächst, Schlusszeil
 - **Python 3.10+** mit `numpy`, `scipy`, `pillow`, `fal-client`
 - **ffmpeg**
 - **Ein eigenes Konto bei [fal.ai](https://fal.ai)** mit etwas Guthaben, für KI-Bewegung, Bildbearbeitung, Musik und Geräusche. Jede Person nutzt ihren eigenen Schlüssel. Im Skill steckt kein Schlüssel, und niemand sonst bezahlt deine Aufrufe.
-- **Gute Fotos**: je Modell ein scharfes Foto von schräg oben (Smartphone reicht, volle Auflösung), dazu eine Gesamtaufnahme aller Modelle mit etwas freier Tischfläche vorn. Möglichst ohne Personen im Bild.
+- **Gute Fotos**: je Modell ein scharfes Foto von schräg oben (Smartphone reicht, volle Auflösung), dazu eine Gesamtaufnahme aller Modelle mit etwas freier Tischfläche vorn. Der Skill funktioniert mit Modellen aus Klemmbausteinen jeder Art. Möglichst ohne Personen im Bild.
 
 ```bash
 pip install numpy scipy pillow fal-client
@@ -80,10 +80,6 @@ Mit ein paar Wiederholungen kostet ein Film für fünf Modelle meist **5–10 $*
 Der Skill bringt eine kleine Python-Bibliothek mit (`skills/modelle-in-aktion/scripts/stopmo`). Sie enthält eine virtuelle Kamera, die direkt aus dem hochaufgelösten Foto schneidet, Figuren-Sprites mit Kontaktschatten, das Füllen freigelegter Grundplatte über das Noppengitter, eine Lupe als Übergang, Bauchbinden und den Stop-Motion-Look mit 12 Bildern pro Sekunde, Korn und minimalem Bildstand-Zittern. Vorlagen für Intro, Modellszene und Outro sind dabei. Die Regeln für Regie, Rhythmus, KI-Einsatz und Ton stehen in `skills/modelle-in-aktion/references/` und kommen aus der Produktion eines echten Werte-Films.
 
 Schrift: Nunito (SIL Open Font License, liegt in `assets/fonts`). Eigene Schrift und Farben stellst du in `project.json` ein.
-
-## Marken
-
-LEGO® und SERIOUS PLAY® sind Marken der LEGO Gruppe. Dieser Skill ist kein Produkt der LEGO Gruppe und wird von ihr weder gesponsert noch autorisiert oder unterstützt. Er funktioniert mit Modellen aus beliebigen Bausteinen. Die Videos, die er erzeugt, nennen keine Marken.
 
 ## Lizenz
 
