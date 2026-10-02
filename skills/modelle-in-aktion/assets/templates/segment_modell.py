@@ -38,7 +38,11 @@ OUT = f"segments/{KEY}.mp4"
 SHEET = f"sheets/{KEY}.jpg"
 
 # ---------------------------------------------------------------- Quelle und Kamera (Fotopixel)
-WORLD = K.World("input/{KEY}.jpg")          # oder bereinigtes Weltbild aus work/{KEY}/welt.jpg
+MODEL = next(m for m in json.loads(Path("project.json").read_text())["models"] if m["key"] == KEY)
+WORLD = K.World(MODEL["photo"])             # oder bereinigtes Weltbild, z. B. work/{KEY}/welt.jpg
+# Hochformatfoto? Totale = ganze Platte in voller Breite; hohe Elemente (Baum, Kran) dürfen oben angeschnitten sein
+# und kommen in der Nahaufnahme, oder K.World(..., pad_top=…) schafft Kopffreiheit. Nachbarmodelle am Rand:
+# Ausschnitt enger, Qwen entfernen (nur maskiert) oder bewusst stehen lassen – nie eine KI-Kamerafahrt.
 TOT = WORLD.fit_box()                        # Gesamtbild: ganzes Modell, Platte vollständig, kein Nachbarmodell
 NAH = K.box_around((2400, 2000), 1600)       # Nahaufnahme um die Hauptfigur (mind. 1200 px breit = scharf)
 PUSH = K.zoom_path(TOT, NAH, 7, C.ease)[1:]  # 6 Stufen rein (Bild 18–23), landet exakt in NAH
@@ -46,7 +50,9 @@ PULL = list(reversed(K.zoom_path(TOT, NAH, 7, C.ease)))[1:]  # 6 Stufen raus (72
 
 # ---------------------------------------------------------------- Figuren (Weltkoordinaten)
 # Hüpfer: Polygon eng um die Figur (photo_tools.py grid zum Ablesen), lmax = größter Hub in Fotopixeln,
-# frames = {bild: hub} – mit S.hop_lifts(start, lmax) erzeugen. ROW/COL = Noppengitter (fill.estimate_lattice).
+# frames = {bild: hub} – mit S.hop_lifts(start, lmax) erzeugen. ROW/COL = Noppengitter (fill.estimate_lattice),
+# DIREKT NEBEN der Figur gemessen. Optionale Felder je Eintrag: avoid_polys, keep, feet, margin, bg_fill
+# (bg_fill z. B. für eine Figur in einem Pokal/Boot: dunkles Innere statt Platte), squash {bild: 0.92} (Nachfedern).
 ROW, COL = None, None
 HOPS = [
     # {"name": "figur-a", "poly": [(x, y), …], "lmax": 40, "frames": {**S.hop_lifts(84, 40), **S.hop_lifts(90, 40)}},
@@ -76,7 +82,9 @@ def camera(i: int):
 class Scene:
     def __init__(self):
         self.base = WORLD.array()
-        self.hops = [(h, S.Hopper(self.base, h["poly"], h["lmax"], ROW, COL, name=h["name"])) for h in HOPS]
+        opt = ("avoid_polys", "keep", "feet", "margin", "bg_fill")
+        self.hops = [(h, S.Hopper(self.base, h["poly"], h["lmax"], h.get("row", ROW), h.get("col", COL),
+                                  name=h["name"], **{k: h[k] for k in opt if k in h})) for h in HOPS]
         self.clip = None
         if CLIP:
             self.clip = C.Clip(CLIP["file"])
@@ -85,12 +93,17 @@ class Scene:
 
     def frame(self, i: int) -> np.ndarray:
         box = camera(i)
-        active = [(h, hop) for h, hop in self.hops if h["frames"].get(i, 0) > 0]
+        active = [(h, hop) for h, hop in self.hops
+                  if h["frames"].get(i, 0) > 0 or h.get("squash", {}).get(i, 1.0) != 1.0]
         if active:
-            cv = self.base.copy()
+            # nur den sichtbaren Teil (Kamera + betroffene Hüpfer) kopieren: schnell auch bei 24-MP-Fotos
+            hgt, wid = self.base.shape[:2]
+            r = K.union_box(box, *[hop.box for _, hop in active])
+            r = (max(0, r[0] - 4), max(0, r[1] - 4), min(wid, r[2] + 4), min(hgt, r[3] + 4))
+            cv = self.base[r[1]:r[3], r[0]:r[2]].copy()
             for h, hop in active:
-                hop.render(cv, h["frames"][i])
-            f = K.World(cv).shoot(box, cache=False)
+                hop.render(cv, h["frames"].get(i, 0), origin=r[:2], squash=h.get("squash", {}).get(i, 1.0))
+            f = K.shoot_array(cv, box, origin=r[:2])
         else:
             f = WORLD.shoot(box)
         if self.clip is not None and box == NAH:

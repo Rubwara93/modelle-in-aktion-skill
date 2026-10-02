@@ -7,8 +7,11 @@
         (zum Hineinzoomen: erst grob, dann fein mit kleinerem --step). Daraus Polygone, Fußpunkte, Boxen ablesen.
   photo_tools.py crop  <foto> <out.jpg> x0 y0 x1 y1 [--sharpen]
         16:9-Ausschnitt (Box wird auf 16:9 korrigiert, Mitte bleibt) als 1920x1080, Lanczos, optional nachgeschärft.
-  photo_tools.py boxes <foto> <out.jpg> <boxes.json> [--width 1600]
-        Boxen/Polygone zur Kontrolle einzeichnen: {"name": [x0,y0,x1,y1] | [[x,y],…], …}
+  photo_tools.py boxes <foto> <out.jpg> <boxes.json> [--width 1600] [--box x0 y0 x1 y1]
+        Boxen/Polygone zur Kontrolle einzeichnen: {"name": [x0,y0,x1,y1] | [[x,y],…], …} (Fotopixel).
+        Mit --box im Zoom prüfen, ob ein Figur-Polygon eng anliegt (Hände, Füße, Waffen mit drin?).
+  Tipp zum Ablesen: Im grid-Bild stehen an den Linien Originalpixel. Punkt zwischen zwei Linien = lineare
+  Interpolation. Für Umrisse erst grob (--step 200), dann fein (--box um die Figur, --step 25).
   photo_tools.py redact <bild> <out.jpg> x0 y0 x1 y1 [...]
         Rechtecke deckend übermalen (Namen auf Flipcharts, Gesichter) – vor jedem Upload, falls nötig.
 """
@@ -75,8 +78,12 @@ def crop16(path, out, box, sharpen=False):
     print(f"{out}: Box {tuple(round(v) for v in b)}, Faktor {1920 / w:.2f}" + (" (hochgerechnet!)" if w < 1920 else ""))
 
 
-def boxes(path, out, spec, width=1600):
+def boxes(path, out, spec, width=1600, box=None):
     im = open_photo(path)
+    ox, oy = 0, 0
+    if box:
+        ox, oy = box[0], box[1]
+        im = im.crop(tuple(box))
     s = width / im.width
     view = im.resize((width, int(im.height * s)), Image.LANCZOS)
     d = ImageDraw.Draw(view)
@@ -84,11 +91,14 @@ def boxes(path, out, spec, width=1600):
     items = json.loads(Path(spec).read_text())
     for name, v in items.items():
         if v and isinstance(v[0], (list, tuple)):
-            d.polygon([(x * s, y * s) for x, y in v], outline=(255, 0, 255))
-            tx, ty = v[0][0] * s, v[0][1] * s
+            pts = [((x - ox) * s, (y - oy) * s) for x, y in v]
+            d.line(pts + [pts[0]], fill=(255, 0, 255), width=2)
+            for q in pts:
+                d.ellipse([q[0] - 3, q[1] - 3, q[0] + 3, q[1] + 3], fill=(255, 255, 0))
+            tx, ty = pts[0]
         else:
-            d.rectangle([v[0] * s, v[1] * s, v[2] * s, v[3] * s], outline=(255, 0, 255), width=2)
-            tx, ty = v[0] * s, v[1] * s
+            d.rectangle([(v[0] - ox) * s, (v[1] - oy) * s, (v[2] - ox) * s, (v[3] - oy) * s], outline=(255, 0, 255), width=2)
+            tx, ty = (v[0] - ox) * s, (v[1] - oy) * s
         d.text((tx + 3, ty + 2), name, font=f, fill=(255, 255, 0), stroke_width=2, stroke_fill=(0, 0, 0))
     view.save(out, quality=88)
     print(out)
@@ -113,7 +123,7 @@ def main():
     p = sub.add_parser("crop"); p.add_argument("photo"); p.add_argument("out"); p.add_argument("box", type=float, nargs=4)
     p.add_argument("--sharpen", action="store_true")
     p = sub.add_parser("boxes"); p.add_argument("photo"); p.add_argument("out"); p.add_argument("spec")
-    p.add_argument("--width", type=int, default=1600)
+    p.add_argument("--width", type=int, default=1600); p.add_argument("--box", type=int, nargs=4)
     p = sub.add_parser("redact"); p.add_argument("photo"); p.add_argument("out"); p.add_argument("rects", type=int, nargs="+")
     a = ap.parse_args()
     if a.cmd == "info":
@@ -123,7 +133,7 @@ def main():
     elif a.cmd == "crop":
         crop16(a.photo, a.out, a.box, a.sharpen)
     elif a.cmd == "boxes":
-        boxes(a.photo, a.out, a.spec, a.width)
+        boxes(a.photo, a.out, a.spec, a.width, a.box)
     else:
         if len(a.rects) % 4:
             sys.exit("redact braucht Vierergruppen x0 y0 x1 y1")

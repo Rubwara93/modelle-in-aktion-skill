@@ -302,10 +302,17 @@ def brighten(img: np.ndarray, mask: np.ndarray, gain=1.1, warm=0.0) -> np.ndarra
     return out
 
 
-def glow(img: np.ndarray, mask: np.ndarray, color=(255, 240, 210), strength=0.2, blur=18.0) -> np.ndarray:
-    """Weiches Leuchten (Screen) – z. B. ein Herz, das aufglüht."""
-    g = ndi.gaussian_filter(np.clip(mask, 0, 1), blur)[..., None] * np.array(color, np.float32) * strength
-    return 255 - (255 - img) * (255 - g) / 255
+def glow(img: np.ndarray, mask: np.ndarray, strength=0.25, blur=18.0, halo_only=False) -> np.ndarray:
+    """Weiches Aufleuchten (z. B. ein Herz glüht). Hellt farbtreu auf (Farbton bleibt, kein Rot-zu-Orange):
+    multiplikativ, ohne kanalweises Kappen, plus ein leichter neutraler Schein. halo_only=True leuchtet nur um die Maske herum."""
+    g = np.clip(ndi.gaussian_filter(np.clip(mask, 0, 1), blur), 0, 1)
+    if halo_only:
+        g = g * (1 - np.clip(mask, 0, 1))
+    g = g[..., None]
+    out = img * (1 + strength * g)
+    peak = out.max(axis=2, keepdims=True)
+    out = out * np.minimum(1.0, 255.0 / np.maximum(peak, 1e-3))  # nicht kanalweise kappen: Farbton bleibt
+    return out + (255 - out) * (0.15 * strength * g)  # leichter neutraler Schein
 
 
 def gblur(a: np.ndarray, r: float) -> np.ndarray:

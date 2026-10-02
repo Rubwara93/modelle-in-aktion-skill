@@ -15,7 +15,12 @@
 | je Modell | 8,0 s | Standardrhythmus (unten) |
 | Outro | 4,5 s | harter Schnitt auf dieselbe Gesamtaufnahme, Turm aus allen Steinen wächst, Schlusszeilen, Blende nach Schwarz |
 
-Gesamtlänge = 8,5 s + 8 s × Anzahl Modelle (5 Modelle: 48,5 s). Ab 7 Modellen auf 6 s je Modell kürzen (Totale kürzer, nur ein Beat am Ende).
+Gesamtlänge = 8,5 s + 8 s × Anzahl Modelle (2 Modelle: 24,5 s, 5 Modelle: 48,5 s). Ab 7 Modellen auf 6 s je Modell kürzen (Totale kürzer, nur ein Beat am Ende). Bei 1–2 Modellen ist ein kurzer Film in Ordnung. Wer länger will, gibt jedem Modell 12 s mit zwei Nahaufnahmen (zwei Hero-Momente, dazwischen kurz die Totale).
+
+## Formate und stumme Wiedergabe
+
+- Ausgabe ist 16:9 (1920×1080). Das läuft auf LinkedIn, auf Beamern und auf Monitoren. Ein Hochformat (4:5) bringt der Skill nicht mit, weil Totalen der Modelle darin nicht funktionieren.
+- Auf LinkedIn startet das Video stumm. Der Film muss ohne Ton verständlich sein: Hero-Momente sichtbar machen (deutlicher Hub, Pop des Steins in der Bauchbinde, kurzes Aufleuchten mit `core.glow`), Halte nach jeder Aktion, Bauchbinden lange genug stehen lassen (mind. 3 s).
 
 **Alle Modelle bekommen denselben Rhythmus und ungefähr dieselbe Länge.** Die Gruppen vergleichen. Wenn ein Modell deutlich länger oder aufwendiger ist, fühlt sich eine andere Gruppe zurückgesetzt.
 

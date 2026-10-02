@@ -32,11 +32,16 @@ from stopmo import overlays as O  # noqa: E402
 CFG = json.loads(Path("project.json").read_text())
 TH = O.Theme.load("project.json")
 WORLD = K.World(CFG.get("overview_photo", "input/gesamt.jpg"))
-BOX_A = WORLD.fit_box()                     # Totale aller Modelle; oben keine Personen, unten freie Tischfläche
+BOX_A = WORLD.fit_box("bottom")                     # Totale aller Modelle; oben keine Personen, unten freie Tischfläche
 FOCUS = ((BOX_A[0] + BOX_A[2]) / 2, (BOX_A[1] + BOX_A[3]) / 2)
 BOX_A_END = K.zoom_box(BOX_A, 1.05, FOCUS)
-BOX_END = K.box_around((WORLD.size[0] * 0.3, WORLD.size[1] * 0.45), (BOX_A[2] - BOX_A[0]) / 1.55)  # erstes Modell
-TITLE_AT = (960, 800)                       # Bildposition (bei BOX_A) der Titelmitte – auf freie Fläche legen!
+# Endeinstellung = das erste Modell in der Gesamtaufnahme (project.json models[0].overview_box, 16:9-Box in Fotopixeln
+# der Gesamtaufnahme, mit photo_tools.py grid ablesen). Ohne Angabe: Mitte, Zoom 1,55 – dann unbedingt setzen.
+_first = CFG["models"][0].get("overview_box")
+BOX_END = tuple(_first) if _first else K.zoom_box(BOX_A, 1.55, FOCUS)
+TITLE_AT = (960, 820)                       # Bildposition (bei BOX_A) der Titelmitte – auf freie Fläche legen!
+# Zeigt die Gesamtaufnahme mehr Modelle als der Film: Ausschnitt BOX_A auf die gezeigten Modelle legen, oder alle
+# zeigen und nur die Steine der Film-Modelle aufleuchten lassen (die Steinreihe hat so viele Steine wie project.json).
 N = 48
 n_models = len(TH.colors)
 LIGHT = [24 + 3 * k for k in range(n_models)]   # Bilder, in denen die Steine aufleuchten

@@ -49,8 +49,8 @@ def sheets(path, out, every, dur):
         for k, (t, th) in enumerate(part):
             x, y = (k % 4) * w, (k // 4) * h
             im.paste(th, (x, y))
-            d.rectangle([x + 2, y + 2, x + 64, y + 18], fill=(0, 0, 0))
-            d.text((x + 6, y + 4), f"{t:.2f} s", fill=(255, 255, 0))
+            d.rectangle([x + w - 66, y + h - 20, x + w - 2, y + h - 2], fill=(0, 0, 0))
+            d.text((x + w - 62, y + h - 17), f"{t:.2f} s", fill=(255, 255, 0))
         f = f"{out}-{s // 12 + 1}.jpg"
         im.save(f, quality=85)
         files.append(f)

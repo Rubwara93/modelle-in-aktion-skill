@@ -27,8 +27,10 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("folder")
     ap.add_argument("--models", type=int, default=5)
+    ap.add_argument("--keys", nargs="+", help="eigene Kurznamen je Modell, z. B. zukunft stolz (statt modell-1 …)")
     ap.add_argument("--title", nargs="+", default=["Unsere Werte …", "in Aktion"])
     a = ap.parse_args()
+    keys = a.keys or [f"modell-{i + 1}" for i in range(a.models)]
     root = Path(a.folder)
     for d in ["input", "private", "plan/specs", "work", "clips", "segments", "sheets", "audio/sfx", "comp",
               "output", "logs"]:
@@ -41,13 +43,14 @@ def main():
         cfg = {
             "title": {"lines": [[title[0], "ink"], [title[1], "accent"]]},
             "outro": {"head": [["Gemeinsam gebaut. ", "ink"], ["Gemeinsam gelebt.", "accent"]],
-                      "sub": "", "sign": ""},
+                      "sub": "", "sign": "", "head_px": 96, "sub_px": 48, "sign_px": 36},
             "theme": {"font_family": "Nunito", "font_dir": None, "ink": "#231F20", "accent": "#E7362C",
                       "muted": "#504A46", "card_bg": "#FFFFFF"},
             "overview_photo": "input/gesamt.jpg",
-            "models": [{"key": f"modell-{i + 1}", "label": "", "name": f"Modell {i + 1}", "claim": "",
-                        "color": PALETTE[i % len(PALETTE)], "photo": f"input/modell-{i + 1}.jpg"}
-                       for i in range(a.models)],
+            "models": [{"key": k, "label": "", "name": f"Modell {i + 1}", "claim": "",
+                        "color": PALETTE[i % len(PALETTE)], "photo": f"input/{k}.jpg",
+                        "overview_box": None}
+                       for i, k in enumerate(keys)],
             "audio": {"target_lufs": -14, "music_gain": 0.5, "music": "audio/musik.mp3"},
             "budget_usd": 15,
         }

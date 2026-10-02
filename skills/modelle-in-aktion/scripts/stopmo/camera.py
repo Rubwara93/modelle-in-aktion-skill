@@ -74,6 +74,23 @@ class World:
         return (x0, y0, x0 + bw, y0 + bh)
 
 
+def shoot_array(arr: np.ndarray, box, origin=(0, 0)) -> np.ndarray:
+    """Wie World.shoot, aber direkt aus einem (Teil-)Weltbild als Array, dessen Ecke bei origin liegt.
+    Schneidet erst knapp aus und wandelt nur diesen Teil – viel schneller als ein ganzes 24-MP-Bild."""
+    x0, y0, x1, y1 = [float(v) for v in box]
+    ox, oy = origin
+    cx0, cy0 = max(0, int(x0 - ox) - 2), max(0, int(y0 - oy) - 2)
+    cx1, cy1 = min(arr.shape[1], int(x1 - ox) + 3), min(arr.shape[0], int(y1 - oy) + 3)
+    sub = to_img(arr[cy0:cy1, cx0:cx1])
+    b = (x0 - ox - cx0, y0 - oy - cy0, x1 - ox - cx0, y1 - oy - cy0)
+    return np.asarray(sub.resize((W, H), Image.LANCZOS, box=b)).astype(np.float32)
+
+
+def union_box(*boxes) -> tuple[int, int, int, int]:
+    return (int(min(b[0] for b in boxes)), int(min(b[1] for b in boxes)),
+            int(np.ceil(max(b[2] for b in boxes))), int(np.ceil(max(b[3] for b in boxes))))
+
+
 def box_around(center, width) -> tuple:
     cx, cy = center
     h = width / ASPECT

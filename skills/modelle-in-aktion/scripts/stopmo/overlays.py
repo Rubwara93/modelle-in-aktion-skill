@@ -147,7 +147,7 @@ class Theme:
         icon, pad = 108, 26
         probe = ImageDraw.Draw(Image.new("RGB", (1, 1)))
         f_claim = self.font("SemiBold", 31)
-        lines = m.get("claim_lines") or (balanced_lines(claim, f_claim, 560) if claim else [])
+        lines = m.get("claim_lines") or (balanced_lines(claim, f_claim, 700) if claim else [])
         vsize = 58
         while True:
             f_value = self.font("Black", vsize)

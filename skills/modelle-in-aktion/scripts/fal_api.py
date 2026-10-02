@@ -48,7 +48,7 @@ def _load_key() -> None:
                     os.environ["FAL_KEY"] = line.split("=", 1)[1].strip().strip('"').strip("'")
                     return
     sys.exit("FAL_KEY fehlt. Eigenen Schlüssel auf fal.ai anlegen und als Umgebungsvariable FAL_KEY setzen "
-             "oder in die Datei .env im Projektordner schreiben (siehe README).")
+             "oder in die Datei .env im Projektordner schreiben (Anleitung: github.com/Rubwara93/modelle-in-aktion-skill).")
 
 
 def _client():

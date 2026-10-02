@@ -28,7 +28,7 @@ from stopmo import overlays as O  # noqa: E402
 CFG = json.loads(Path("project.json").read_text())
 TH = O.Theme.load("project.json")
 WORLD = K.World(CFG.get("overview_photo", "input/gesamt.jpg"))
-BOX = WORLD.fit_box()                     # dieselbe Totale wie Intro-Bild 0
+BOX = WORLD.fit_box("bottom")                     # dieselbe Totale wie Intro-Bild 0
 FOCUS = ((BOX[0] + BOX[2]) / 2, (BOX[1] + BOX[3]) / 2)
 BLOCK_AT = (960, 820)                     # Bildmitte des Blocks (Turm + Text) – auf freie Tischfläche legen!
 N = 54
@@ -37,10 +37,12 @@ FILL = [3 * k for k in range(n)]
 TEXT_AT = FILL[-1] + 3
 
 o = CFG.get("outro", {})
-HEAD = TH.runs_sprite(o.get("head", [["Gemeinsam gebaut.", "ink"]]), 78)
-SUB = TH.text_sprite(o["sub"], "muted", 40, "SemiBold") if o.get("sub") else None
-SIGN = TH.text_sprite(o["sign"], "muted", 28, "Bold") if o.get("sign") else None
-TOWER_W = 120
+# Größen für Handy-Bildschirme ausgelegt (LinkedIn); in project.json outro.head_px/sub_px/sign_px änderbar
+HP, SP, GP = o.get("head_px", 96), o.get("sub_px", 48), o.get("sign_px", 36)
+HEAD = TH.runs_sprite(o.get("head", [["Gemeinsam gebaut.", "ink"]]), HP)
+SUB = TH.text_sprite(o["sub"], "muted", SP, "SemiBold") if o.get("sub") else None
+SIGN = TH.text_sprite(o["sign"], "muted", GP, "Bold") if o.get("sign") else None
+TOWER_W = int(HP * 1.6)
 
 
 def camera(i):
@@ -66,11 +68,11 @@ def overlay(i, box):
         s = O.pop_curve(i, TEXT_AT)
         if s:
             tx = x_left + (tw.width + 30) * z
-            O.place_left(layer, HEAD, tx, cy - 55 * z, s * z)
+            O.place_left(layer, HEAD, tx, cy - 0.70 * HP * z, s * z)
             if SUB:
-                O.place_left(layer, SUB, tx + 4 * z, cy + 15 * z, s * z)
+                O.place_left(layer, SUB, tx + 4 * z, cy + 0.20 * HP * z, s * z)
             if SIGN:
-                O.place_left(layer, SIGN, tx + 4 * z, cy + 65 * z, s * z)
+                O.place_left(layer, SIGN, tx + 4 * z, cy + 0.85 * HP * z, s * z)
     return layer
 
 

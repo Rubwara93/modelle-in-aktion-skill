@@ -73,6 +73,6 @@ Lass die Spezifikation von zwei Seiten prüfen (zwei Subagenten oder zwei getren
 
 ## 5. Schnittplan und Bildplan
 
-`plan/edit_plan.json`: Reihenfolge, Dauer je Segment, Hero-Schlag absolut, Übergänge, Einblendungen. Danach je Segment einen **Bildplan** in den Kopf des Segment-Skripts (Vorlage in `assets/templates/segment_modell.py`): Bildnummer → Aktion → Geräusch mit Zeit. Erst wenn der Bildplan steht, Code schreiben. Der Bildplan ist zugleich die Liste für die Geräusch-Cues.
+`plan/edit_plan.json` (Arbeitsnotiz, kein Skript liest sie): Reihenfolge, Dauer je Segment, Hero-Schlag absolut, Übergänge, Einblendungen. Danach je Segment einen **Bildplan** in den Kopf des Segment-Skripts (Vorlage in `assets/templates/segment_modell.py`): Bildnummer → Aktion → Geräusch mit Zeit. Erst wenn der Bildplan steht, Code schreiben. Der Bildplan ist zugleich die Liste für die Geräusch-Cues.
 
 Zeig der Person nach der Analyse die Geschichten je Modell (kurz, im Chat) und hol ein Okay, bevor Geld für KI-Aufrufe ausgegeben wird.

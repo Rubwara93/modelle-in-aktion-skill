@@ -175,11 +175,17 @@ class Hopper:
     feet        Liste ((x, y), rx, ry) Schattenellipsen in Weltkoordinaten; None = automatisch am Fußpunkt
     avoid_polys Nachbarfiguren/Objekte, die nicht als Spender dienen dürfen
     keep        Funktion I -> bool, verfeinert die Polygonmaske auf echte Figurpixel
+    bg_fill     Funktion (I, loch, avoid) -> Bild: eigene Füllung statt Noppenversatz, z. B. dunkles Innere eines
+                Pokals oder Boots, wenn die Figur in einem Gefäß steht (loch/avoid sind bool-Arrays im Ausschnitt)
+    margin      Rand des Arbeitsausschnitts; None = aus Gitter und Hub abgeleitet (Spender liegen bis 3 Noppen weg)
     """
 
     def __init__(self, world: np.ndarray, poly, lmax: float, row=None, col=None, feet=None, avoid_polys=(), keep=None,
-                 name="", margin=110):
+                 name="", margin=None, bg_fill=None):
         xs, ys = [q[0] for q in poly], [q[1] for q in poly]
+        if margin is None:
+            pitch = max(np.hypot(*row), np.hypot(*col)) if row is not None and col is not None else 30.0
+            margin = int(max(110, 3.5 * pitch + lmax))
         Hh, Ww = world.shape[:2]
         x0, y0 = max(0, int(min(xs)) - margin), max(0, int(min(ys) - lmax) - margin)
         x1, y1 = min(Ww, int(max(xs)) + margin), min(Hh, int(max(ys)) + margin)
@@ -193,17 +199,23 @@ class Hopper:
             self.a = np.clip(ndi.gaussian_filter(k.astype(np.float32), 0.7), 0, 1) * grow_mask(k, 1)
         hull = self.a > 0.02
         L = int(np.ceil(lmax)) + 1
-        cov = np.zeros_like(hull)
-        cov[:-L] = hull[L:]
-        E = grow_mask(hull & ~cov, 2)  # was beim größten Hub frei wird
+        E = np.zeros_like(hull)  # was bei irgendeinem Hub 1..L frei wird (nicht-konvexe Umrisse!)
+        for l in range(1, L + 1):
+            cov = np.zeros_like(hull)
+            cov[:-l] = hull[l:]
+            E |= hull & ~cov
+        E = grow_mask(E, 2)
         avoid = grow_mask(hull, 4)
         for q in avoid_polys:
             avoid |= grow_mask(pmask(q, self.box) > 0.02, 4)
         bg = I.copy()
         done = np.zeros_like(E)
-        if row is not None and col is not None:
+        if bg_fill is not None:
+            bg = bg_fill(I, E, avoid)
+            done = E.copy()
+        elif row is not None and col is not None:
             # Spender: bevorzugt ganze Reihen darunter (dort liegt freie Platte), dann seitlich
-            lat = [(a, b) for b in (2, 3, 1, -1) for a in (0, 1, -1, 2, -2, 3, -3)]
+            lat = [(a, b) for b in (2, 3, 1, 0, -1) for a in (0, 1, -1, 2, -2, 3, -3) if (a, b) != (0, 0)]
             sf, done = shift_fill(I, E, avoid, row, col, lat=lat)
             bg[done] = sf[done]
         rest = E & ~done
@@ -221,19 +233,31 @@ class Hopper:
         self._yy, self._xx = np.mgrid[0:y1 - y0, 0:x1 - x0].astype(np.float32)
         self.lmax = lmax
 
-    def render(self, cv: np.ndarray, lift: float, shadow=0.30) -> np.ndarray:
-        """Figur mit Hub lift (Weltpixel) in cv (Weltbild, in place) zeichnen. lift <= 0: unverändert."""
-        if lift <= 0:
+    def render(self, cv: np.ndarray, lift: float, shadow=0.30, origin=(0, 0), squash=1.0) -> np.ndarray:
+        """Figur mit Hub lift (Weltpixel) in cv zeichnen (in place). cv ist das Weltbild oder ein Ausschnitt davon,
+        dessen linke obere Ecke bei origin (Weltkoordinaten) liegt; der Hopper-Ausschnitt muss ganz darin liegen.
+        lift <= 0: unverändert. squash < 1 staucht die Figur am Boden (Nachfedern, z. B. 0,92)."""
+        if lift <= 0 and squash == 1.0:
             return cv
         x0, y0, x1, y1 = self.box
+        x0, x1, y0, y1 = x0 - origin[0], x1 - origin[0], y0 - origin[1], y1 - origin[1]
         R = cv[y0:y1, x0:x1]
         R = R * (1 - self.E_a[..., None]) + self.bg * self.E_a[..., None]
         for (fx, fy), rx, ry in self.feet:
             e = ((((self._xx - fx) / rx) ** 2 + ((self._yy - fy) / ry) ** 2) <= 1).astype(np.float32)
-            op = shadow * (1 - 0.35 * min(lift / max(self.lmax, 1), 1.0))
-            R = R * (1 - (ndi.gaussian_filter(e, 2.5 + lift / 5.0) * op)[..., None])
-        a = lift_rows(self.a, lift)
-        rgb = lift_rows(self.I, lift)
+            if lift > 0:
+                op = shadow * (1 - 0.35 * min(lift / max(self.lmax, 1), 1.0))
+                R = R * (1 - (ndi.gaussian_filter(e, 2.5 + lift / 5.0) * op)[..., None])
+        a, rgb = self.a, self.I
+        if squash != 1.0:
+            fy = feet_of(self.a)[1]
+            ys = (np.arange(a.shape[0], dtype=np.float32) - fy) / squash + fy
+            ys = np.clip(ys, 0, a.shape[0] - 1)
+            a = ndi.map_coordinates(a, [ys[:, None].repeat(a.shape[1], 1), self._xx], order=1)
+            rgb = np.stack([ndi.map_coordinates(rgb[..., c], [ys[:, None].repeat(a.shape[1], 1), self._xx], order=1)
+                            for c in range(3)], 2)
+        a = lift_rows(a, max(lift, 0))
+        rgb = lift_rows(rgb, max(lift, 0))
         R = R * (1 - a[..., None]) + rgb * a[..., None]
         cv[y0:y1, x0:x1] = R
         return cv

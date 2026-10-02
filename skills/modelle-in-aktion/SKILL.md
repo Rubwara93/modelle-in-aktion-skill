@@ -5,7 +5,7 @@ description: Macht aus Fotos von Workshop-Modellen (gebaut mit Bausteinen, z. B.
 
 # Modelle in Aktion
 
-Aus den Fotos der Modelle eines Workshops entsteht ein Film von 30–60 Sekunden: Gesamtbild aller Modelle mit Titel, dann jedes Modell einzeln (Totale → hinein → Hero-Moment → wieder heraus), zum Schluss alle zusammen. Der Look: **Das scharfe Foto ist die Grundebene, nur einzelne Figuren bewegen sich, im Stop-Motion-Takt von 12 Bildern/s.** KI (Kling über fal.ai) liefert Bewegung nur dort, wo Sprites aus dem Foto nicht reichen, und wird maskiert eingesetzt. Sie gestaltet nie das ganze Bild um.
+Aus den Fotos der Modelle eines Workshops entsteht ein Film von 25–60 Sekunden (8 s je Modell plus Intro und Outro), im Format 16:9: Gesamtbild aller Modelle mit Titel, dann jedes Modell einzeln (Totale → hinein → Hero-Moment → wieder heraus), zum Schluss alle zusammen. Der Look: **Das scharfe Foto ist die Grundebene, nur einzelne Figuren bewegen sich, im Stop-Motion-Takt von 12 Bildern/s.** KI (Kling über fal.ai) liefert Bewegung nur dort, wo Sprites aus dem Foto nicht reichen, und wird maskiert eingesetzt. Sie gestaltet nie das ganze Bild um.
 
 Die Teilnehmenden kennen ihre Modelle. Ein Film, der Bewegungen erfindet, die nicht zur Bedeutung passen, oder ein Modell verändert, wirkt auf sie fremd. Deshalb gilt die Reihenfolge: **verstehen → planen → bauen → prüfen**.
 
@@ -40,7 +40,7 @@ Fehlt der fal-Schlüssel, erklär kurz: eigenes Konto auf fal.ai, Guthaben aufla
 ## Ablauf
 
 ### 1. Projekt anlegen und Material sichten
-`python3 <skill>/scripts/init_project.py <ordner> --models <n>`. Fotos nach `input/` (je Modell + eine Gesamtaufnahme `input/gesamt.jpg`), Flipcharts und Notizen nach `private/`. Jedes Foto mit `photo_tools.py grid` ansehen, bei Details mit `--box` hineinzoomen. Behaupte nichts über ein Modell, das du nicht im Foto gesehen hast.
+`python3 <skill>/scripts/init_project.py <ordner> --keys <kurzname-1> <kurzname-2> …` (ein Kurzname je Modell, z. B. `zukunft stolz`; die Fotos heißen dann `input/<kurzname>.jpg`). Fotos nach `input/` (je Modell + eine Gesamtaufnahme `input/gesamt.jpg`), Flipcharts und Notizen nach `private/`. Jedes Foto mit `photo_tools.py grid` ansehen, bei Details mit `--box` hineinzoomen. Für Intro und Outro je Modell die 16:9-Box in der Gesamtaufnahme notieren (`models[].overview_box`). Die erste ist das Ziel des Push im Intro. Behaupte nichts über ein Modell, das du nicht im Foto gesehen hast.
 
 ### 2. Verstehen: Interview und Analyse → `references/regie.md`
 Kurzes Interview (Zweck, Erkennbarkeit der Organisation, Namen/Claims/Farben, Geschichte je Modell, Titel, Musikrichtung, Budget). Dann je Modell eine Spezifikation `plan/specs/<key>.json` mit Elementen, Metaphern, Belegen, Bewegungspotenzial, Geschichte, Shots, Geräuschen. Zwei Kritiken (Handwerk, Bedeutung). **Checkpoint:** die Geschichte je Modell in zwei, drei Sätzen der Person zeigen und das Okay einholen.
@@ -75,5 +75,5 @@ Bekannte Fallen und ihre Lösungen: `references/fallen.md`. Lies die Datei, bevo
 
 ## Dateien im Projekt (Kurzform)
 
-- `project.json`: `title.lines`, `outro.head/sub/sign`, `theme` (Farben, Schrift), `overview_photo`, `models[]` (`key`, `label`, `name`, `claim`, optional `claim_lines`, `color`, `photo`), `audio` (`target_lufs`, `music_gain`, `music`).
+- `project.json`: `title.lines`, `outro.head/sub/sign` (+ `head_px/sub_px/sign_px`), `theme` (Farben, Schrift), `overview_photo`, `models[]` (`key`, `label`, `name`, `claim`, optional `claim_lines`, `color`, `photo`, `overview_box`), `audio` (`target_lufs`, `music_gain`, `music`).
 - `plan/segments.json`: `order` und je Segment `video`, `duration_s`, `model` (Index oder null), `hero_t`, `card_in_s`, `card_out_s`, `card_stays`, `cues[]` (`name`, `t_s`, `gain`, `hit`/`soft`, `pitch_semitones`). Format siehe Kopf von `build_final.py`.
